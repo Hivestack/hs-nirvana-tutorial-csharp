@@ -1,0 +1,6 @@
+
+.vs/
+.DS_Store
+packages/
+hs-nirvana-tutorial-csharp/bin
+hs-nirvana-tutorial-csharp/obj
