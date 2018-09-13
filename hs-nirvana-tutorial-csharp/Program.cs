@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml;
@@ -37,6 +38,7 @@ namespace hsnirvanaapitutorial
                 XmlDocument doc = new XmlDocument();
                 doc.LoadXml(adResponse);
 
+                // Parsing VAST from ad response
                 String creativeFileURL = "";
                 XmlNode creativeFileURLNode = doc.DocumentElement.SelectSingleNode("/VAST/Ad/InLine/Creatives/Creative/Linear/MediaFiles/MediaFile");
                 if (creativeFileURLNode != null)
@@ -112,8 +114,22 @@ namespace hsnirvanaapitutorial
 
             Console.WriteLine("Playing creative - 6 seconds simulation");
 
-            // 6000 milliseconds
-            await Task.Delay(6000);
+            try
+            {
+                Process browser_process = Process.Start(creativeFileURL);
+                // 6000 milliseconds - assuming ad duration is 6 seconds
+                await Task.Delay(6000);
+
+                browser_process.CloseMainWindow();
+                browser_process.Close();
+
+            }
+            catch (Exception)
+            {
+                // Not a big issue, but Mono has an issue with closing anonymous process started without specifying application explicitly
+                Console.WriteLine("Error closing browser.");
+            }
+
 
             Console.WriteLine("Done Playing creative for 6 seconds");
 
